@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sondago - Système de Sondage</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <h1>Sondago</h1>
+            <div class="nav-links">
+                <a href="#" id="homeLink">Accueil</a>
+                <a href="#" id="createSurveyLink">Créer un sondage</a>
+                <a href="#" id="mySurveysLink">Mes sondages</a>
+                <a href="#" id="loginLink">Connexion</a>
+                <a href="#" id="registerLink">Inscription</a>
+                <a href="#" id="logoutLink" style="display: none;">Déconnexion</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <!-- Section d'authentification -->
+        <section id="authSection" class="section">
+            <div id="loginForm" class="auth-form">
+                <h2>Connexion</h2>
+                <form id="loginFormElement">
+                    <input type="email" placeholder="Email" required>
+                    <input type="password" placeholder="Mot de passe" required>
+                    <button type="submit">Se connecter</button>
+                </form>
+            </div>
+
+            <div id="registerForm" class="auth-form" style="display: none;">
+                <h2>Inscription</h2>
+                <form id="registerFormElement">
+                    <input type="text" placeholder="Nom" required>
+                    <input type="email" placeholder="Email" required>
+                    <input type="password" placeholder="Mot de passe" required>
+                    <button type="submit">S'inscrire</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Section des sondages -->
+        <section id="surveysSection" class="section" style="display: none;">
+            <h2>Sondages disponibles</h2>
+            <div id="surveysList"></div>
+        </section>
+
+        <!-- Section de création de sondage -->
+        <section id="createSurveySection" class="section" style="display: none;">
+            <h2>Créer un nouveau sondage</h2>
+            <form id="createSurveyForm">
+                <input type="text" placeholder="Nom du sondage" required>
+                <div id="questionsContainer">
+                    <!-- Les questions seront ajoutées ici dynamiquement -->
+                </div>
+                <button type="button" id="addQuestionBtn">Ajouter une question</button>
+                <button type="submit">Créer le sondage</button>
+            </form>
+        </section>
+
+        <!-- Section de réponse à un sondage -->
+        <section id="answerSurveySection" class="section" style="display: none;">
+            <h2 id="surveyTitle"></h2>
+            <form id="answerSurveyForm">
+                <div id="answersContainer">
+                    <!-- Les questions et champs de réponse seront ajoutés ici dynamiquement -->
+                </div>
+                <button type="submit">Soumettre les réponses</button>
+            </form>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html> 
