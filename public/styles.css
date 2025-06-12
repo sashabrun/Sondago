@@ -121,4 +121,70 @@ button:hover {
 
 .hidden {
     display: none;
+}
+
+.response-card {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1rem;
+}
+
+.response-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #eee;
+}
+
+.response-user {
+    font-weight: bold;
+    color: #333;
+}
+
+.response-date {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.response-answers {
+    margin-top: 1rem;
+}
+
+.response-answer {
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+}
+
+.response-question {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.response-value {
+    color: #444;
+}
+
+.response-stats {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+}
+
+.stat-item {
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    font-weight: bold;
+    color: #333;
+}
+
+.stat-value {
+    color: #666;
 } 

@@ -300,10 +300,11 @@ function displaySurveys(sondages) {
             <h3>${sondage.nom}</h3>
             <p>Créé par: ${sondage.createur.nom}</p>
             <p>${sondage.questions.length} questions</p>
-            <button onclick="showSurvey(${sondage._id})">Voir le sondage</button>
+            <button onclick="showSurvey('${sondage._id}')">Voir le sondage</button>
             ${currentUser && sondage.createur._id === currentUser._id ? `
-                <button onclick="editSurvey(${sondage._id})">Modifier</button>
-                <button onclick="deleteSurvey(${sondage._id})">Supprimer</button>
+                <button onclick="editSurvey('${sondage._id}')">Modifier</button>
+                <button onclick="deleteSurvey('${sondage._id}')">Supprimer</button>
+                <button onclick="showResponses('${sondage._id}')">Voir les réponses</button>
             ` : ''}
         `;
         container.appendChild(card);
@@ -367,5 +368,169 @@ async function deleteSurvey(id) {
         }
     } catch (error) {
         console.error('Erreur lors de la suppression du sondage:', error);
+    }
+}
+
+async function editSurvey(id) {
+    try {
+        const response = await fetch(`${API_URL}/sondages/${id}`);
+        const sondage = await response.json();
+        
+        // Remplir le formulaire de création avec les données du sondage
+        const form = document.getElementById('createSurveyForm');
+        form.querySelector('input[type="text"]').value = sondage.nom;
+        
+        const questionsContainer = document.getElementById('questionsContainer');
+        questionsContainer.innerHTML = '';
+        
+        sondage.questions.forEach(question => {
+            const questionDiv = document.createElement('div');
+            questionDiv.className = 'question-container';
+            questionDiv.innerHTML = `
+                <input type="text" placeholder="Intitulé de la question" value="${question.intitule}" required>
+                <select required>
+                    <option value="ouverte" ${question.type === 'ouverte' ? 'selected' : ''}>Question ouverte</option>
+                    <option value="qcm" ${question.type === 'qcm' ? 'selected' : ''}>QCM</option>
+                </select>
+                <textarea placeholder="Réponses possibles (une par ligne)" style="display: ${question.type === 'qcm' ? 'block' : 'none'};">${question.reponses.join('\n')}</textarea>
+                <div class="question-actions">
+                    <button type="button" class="remove-question">Supprimer</button>
+                </div>
+            `;
+            
+            const select = questionDiv.querySelector('select');
+            const textarea = questionDiv.querySelector('textarea');
+            select.addEventListener('change', () => {
+                textarea.style.display = select.value === 'qcm' ? 'block' : 'none';
+            });
+            
+            questionDiv.querySelector('.remove-question').addEventListener('click', () => {
+                questionDiv.remove();
+            });
+            
+            questionsContainer.appendChild(questionDiv);
+        });
+        
+        // Modifier le gestionnaire de soumission du formulaire pour la mise à jour
+        const originalSubmitHandler = form.onsubmit;
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            const nom = form.querySelector('input[type="text"]').value;
+            const questions = Array.from(form.querySelectorAll('.question-container')).map(container => {
+                const intitule = container.querySelector('input[type="text"]').value;
+                const type = container.querySelector('select').value;
+                const reponses = type === 'qcm' 
+                    ? container.querySelector('textarea').value.split('\n').filter(r => r.trim())
+                    : [];
+                return { intitule, type, reponses };
+            });
+            
+            try {
+                const response = await fetch(`${API_URL}/sondages/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ nom, questions })
+                });
+                
+                if (response.ok) {
+                    showSection(surveysSection);
+                    loadSurveys();
+                    form.onsubmit = originalSubmitHandler; // Restaurer le gestionnaire original
+                } else {
+                    const data = await response.json();
+                    showError(form, data.error);
+                }
+            } catch (error) {
+                showError(form, 'Erreur lors de la mise à jour du sondage');
+            }
+        };
+        
+        showSection(createSurveySection);
+    } catch (error) {
+        console.error('Erreur lors du chargement du sondage:', error);
+    }
+}
+
+async function showResponses(sondageId) {
+    try {
+        // Récupérer le sondage
+        const sondageResponse = await fetch(`${API_URL}/sondages/${sondageId}`);
+        const sondage = await sondageResponse.json();
+        
+        // Récupérer les réponses
+        const responsesResponse = await fetch(`${API_URL}/reponses/sondage/${sondageId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        const reponses = await responsesResponse.json();
+        
+        // Afficher le titre
+        document.getElementById('responsesTitle').textContent = `Réponses - ${sondage.nom}`;
+        
+        // Préparer le conteneur des réponses
+        const container = document.getElementById('responsesContainer');
+        container.innerHTML = '';
+        
+        if (reponses.length === 0) {
+            container.innerHTML = '<p>Aucune réponse pour ce sondage.</p>';
+            showSection(responsesSection);
+            return;
+        }
+        
+        // Afficher chaque réponse
+        reponses.forEach(reponse => {
+            const responseCard = document.createElement('div');
+            responseCard.className = 'response-card';
+            
+            // En-tête de la réponse
+            const header = document.createElement('div');
+            header.className = 'response-header';
+            header.innerHTML = `
+                <div class="response-user">${reponse.utilisateur_id.nom}</div>
+                <div class="response-date">${new Date(reponse.createdAt).toLocaleDateString()}</div>
+            `;
+            responseCard.appendChild(header);
+            
+            // Réponses aux questions
+            const answersDiv = document.createElement('div');
+            answersDiv.className = 'response-answers';
+            
+            reponse.reponses.forEach(answer => {
+                const question = sondage.questions.find(q => q._id === answer.question_id);
+                if (question) {
+                    const answerDiv = document.createElement('div');
+                    answerDiv.className = 'response-answer';
+                    answerDiv.innerHTML = `
+                        <div class="response-question">${question.intitule}</div>
+                        <div class="response-value">${Array.isArray(answer.reponse) ? answer.reponse.join(', ') : answer.reponse}</div>
+                    `;
+                    answersDiv.appendChild(answerDiv);
+                }
+            });
+            
+            responseCard.appendChild(answersDiv);
+            container.appendChild(responseCard);
+        });
+        
+        // Ajouter les statistiques
+        const statsDiv = document.createElement('div');
+        statsDiv.className = 'response-stats';
+        statsDiv.innerHTML = `
+            <h3>Statistiques</h3>
+            <div class="stat-item">
+                <span class="stat-label">Nombre total de réponses :</span>
+                <span class="stat-value">${reponses.length}</span>
+            </div>
+        `;
+        container.appendChild(statsDiv);
+        
+        showSection(responsesSection);
+    } catch (error) {
+        console.error('Erreur lors du chargement des réponses:', error);
+        alert('Erreur lors du chargement des réponses');
     }
 } 

@@ -84,7 +84,7 @@ router.delete('/:id', auth, async (req, res) => {
       return res.status(403).json({ error: 'Non autorisé' });
     }
     
-    await sondage.remove();
+    await Sondage.deleteOne({ _id: req.params.id });
     res.json({ message: 'Sondage supprimé avec succès' });
   } catch (error) {
     res.status(500).json({ error: error.message });
