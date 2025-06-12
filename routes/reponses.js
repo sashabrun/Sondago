@@ -33,7 +33,8 @@ router.post('/', auth, async (req, res) => {
 router.get('/sondage/:sondageId', auth, async (req, res) => {
   try {
     const reponses = await Reponse.find({ sondage_id: req.params.sondageId })
-      .populate('utilisateur_id', 'nom email');
+      .populate('utilisateur_id', 'nom email')
+      .sort({ createdAt: -1 });
     res.json(reponses);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -44,7 +45,8 @@ router.get('/sondage/:sondageId', auth, async (req, res) => {
 router.get('/utilisateur', auth, async (req, res) => {
   try {
     const reponses = await Reponse.find({ utilisateur_id: req.userId })
-      .populate('sondage_id');
+      .populate('sondage_id')
+      .sort({ createdAt: -1 });
     res.json(reponses);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -83,7 +85,7 @@ router.delete('/:id', auth, async (req, res) => {
       return res.status(403).json({ error: 'Non autorisé' });
     }
     
-    await reponse.remove();
+    await Reponse.deleteOne({ _id: req.params.id });
     res.json({ message: 'Réponse supprimée avec succès' });
   } catch (error) {
     res.status(500).json({ error: error.message });

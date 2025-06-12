@@ -367,6 +367,62 @@ async function showSurvey(id) {
         });
         
         document.getElementById('surveyTitle').textContent = sondage.nom;
+        
+        // Ajouter le gestionnaire de soumission du formulaire
+        const form = document.getElementById('answerSurveyForm');
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            
+            if (!currentUser) {
+                alert('Vous devez être connecté pour répondre au sondage');
+                return;
+            }
+            
+            const reponses = [];
+            sondage.questions.forEach(question => {
+                const inputs = form.querySelectorAll(`[name="q_${question._id}"]`);
+                let reponse;
+                
+                if (question.type === 'ouverte') {
+                    reponse = inputs[0].value;
+                } else {
+                    reponse = Array.from(inputs)
+                        .filter(input => input.checked)
+                        .map(input => input.value);
+                }
+                
+                reponses.push({
+                    question_id: question._id,
+                    reponse: reponse
+                });
+            });
+            
+            try {
+                const response = await fetch(`${API_URL}/reponses`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        sondage_id: id,
+                        reponses: reponses
+                    })
+                });
+                
+                if (response.ok) {
+                    alert('Votre réponse a été enregistrée avec succès !');
+                    redirectToHome();
+                } else {
+                    const data = await response.json();
+                    alert(data.error || 'Erreur lors de l\'enregistrement de la réponse');
+                }
+            } catch (error) {
+                console.error('Erreur lors de la soumission de la réponse:', error);
+                alert('Erreur lors de l\'enregistrement de la réponse');
+            }
+        };
+        
         showSection(answerSurveySection);
     } catch (error) {
         console.error('Erreur lors du chargement du sondage:', error);
