@@ -8,6 +8,7 @@ const authSection = document.getElementById('authSection');
 const surveysSection = document.getElementById('surveysSection');
 const createSurveySection = document.getElementById('createSurveySection');
 const answerSurveySection = document.getElementById('answerSurveySection');
+const responsesSection = document.getElementById('responsesSection');
 const loginForm = document.getElementById('loginForm');
 const registerForm = document.getElementById('registerForm');
 const loginLink = document.getElementById('loginLink');
@@ -25,27 +26,43 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Vérification de l'authentification
-function checkAuth() {
+async function checkAuth() {
     if (token) {
-        fetch(`${API_URL}/auth/profile`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
+        try {
+            const response = await fetch(`${API_URL}/auth/profile`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            
+            if (response.ok) {
+                const user = await response.json();
+                currentUser = user;
+                updateUIForAuth();
+            } else {
+                handleLogout();
             }
-        })
-        .then(res => res.json())
-        .then(user => {
-            currentUser = user;
-            updateUIForAuth();
-        })
-        .catch(() => {
-            localStorage.removeItem('token');
-            token = null;
-            currentUser = null;
-            updateUIForAuth();
-        });
+        } catch (error) {
+            handleLogout();
+        }
     } else {
-        updateUIForAuth();
+        handleLogout();
     }
+}
+
+// Gestion de la déconnexion
+function handleLogout() {
+    localStorage.removeItem('token');
+    token = null;
+    currentUser = null;
+    updateUIForAuth();
+    redirectToHome();
+}
+
+// Redirection vers la page d'accueil
+function redirectToHome() {
+    showSection(surveysSection);
+    loadSurveys();
 }
 
 // Mise à jour de l'interface selon l'état d'authentification
@@ -66,6 +83,8 @@ function updateUIForAuth() {
         logoutLink.style.display = 'none';
         createSurveyLink.style.display = 'none';
         mySurveysLink.style.display = 'none';
+        // Rediriger vers la page d'accueil si l'utilisateur n'est pas connecté
+        redirectToHome();
     }
 }
 
@@ -74,41 +93,48 @@ function setupEventListeners() {
     // Navigation
     loginLink.addEventListener('click', (e) => {
         e.preventDefault();
-        showSection(authSection);
-        loginForm.style.display = 'block';
-        registerForm.style.display = 'none';
+        if (!currentUser) {
+            showSection(authSection);
+            loginForm.style.display = 'block';
+            registerForm.style.display = 'none';
+        }
     });
 
     registerLink.addEventListener('click', (e) => {
         e.preventDefault();
-        showSection(authSection);
-        loginForm.style.display = 'none';
-        registerForm.style.display = 'block';
+        if (!currentUser) {
+            showSection(authSection);
+            loginForm.style.display = 'none';
+            registerForm.style.display = 'block';
+        }
     });
 
     logoutLink.addEventListener('click', (e) => {
         e.preventDefault();
-        localStorage.removeItem('token');
-        token = null;
-        currentUser = null;
-        updateUIForAuth();
-        showSection(surveysSection);
+        handleLogout();
     });
 
     createSurveyLink.addEventListener('click', (e) => {
         e.preventDefault();
-        showSection(createSurveySection);
+        if (currentUser) {
+            showSection(createSurveySection);
+        } else {
+            redirectToHome();
+        }
     });
 
     mySurveysLink.addEventListener('click', (e) => {
         e.preventDefault();
-        loadUserSurveys();
+        if (currentUser) {
+            loadUserSurveys();
+        } else {
+            redirectToHome();
+        }
     });
 
     homeLink.addEventListener('click', (e) => {
         e.preventDefault();
-        showSection(surveysSection);
-        loadSurveys();
+        redirectToHome();
     });
 
     // Formulaires
@@ -140,8 +166,7 @@ async function handleLogin(e) {
             localStorage.setItem('token', token);
             currentUser = data.user;
             updateUIForAuth();
-            showSection(surveysSection);
-            loadSurveys();
+            redirectToHome();
         } else {
             showError(form, data.error);
         }
@@ -172,8 +197,7 @@ async function handleRegister(e) {
             localStorage.setItem('token', token);
             currentUser = data.user;
             updateUIForAuth();
-            showSection(surveysSection);
-            loadSurveys();
+            redirectToHome();
         } else {
             showError(form, data.error);
         }
@@ -219,7 +243,7 @@ async function handleCreateSurvey(e) {
 
 // Fonctions utilitaires
 function showSection(section) {
-    [authSection, surveysSection, createSurveySection, answerSurveySection].forEach(s => {
+    [authSection, surveysSection, createSurveySection, answerSurveySection, responsesSection].forEach(s => {
         s.style.display = 'none';
     });
     section.style.display = 'block';
