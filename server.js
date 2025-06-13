@@ -14,7 +14,7 @@ app.use(express.static('public'));
 //mongoose.connect('mongodb://root:example@localhost:27017/sondago?authSource=admin', {
 mongoose.connect('mongodb://root:example@mongo:27017/sondago?authSource=admin', {
     useNewUrlParser: true,
-  useUnifiedTopology: true
+    useUnifiedTopology: true
 })
 .then(() => console.log('Connecté à MongoDB'))
 .catch(err => console.error('Erreur de connexion à MongoDB:', err));

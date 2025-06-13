@@ -5,18 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sondago - Système de Sondage</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <nav>
         <div class="nav-container">
-            <h1>Sondago</h1>
+            <h1><i class="fas fa-poll"></i> Sondago</h1>
             <div class="nav-links">
-                <a href="#" id="homeLink">Accueil</a>
-                <a href="#" id="createSurveyLink">Créer un sondage</a>
-                <a href="#" id="mySurveysLink">Mes sondages</a>
-                <a href="#" id="loginLink">Connexion</a>
-                <a href="#" id="registerLink">Inscription</a>
-                <a href="#" id="logoutLink" style="display: none;">Déconnexion</a>
+                <a href="#" id="homeLink"><i class="fas fa-home"></i> Accueil</a>
+                <a href="#" id="createSurveyLink"><i class="fas fa-plus-circle"></i> Créer un sondage</a>
+                <a href="#" id="mySurveysLink"><i class="fas fa-list"></i> Mes sondages</a>
+                <a href="#" id="loginLink"><i class="fas fa-sign-in-alt"></i> Connexion</a>
+                <a href="#" id="registerLink"><i class="fas fa-user-plus"></i> Inscription</a>
+                <a href="#" id="logoutLink" style="display: none;"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
             </div>
         </div>
     </nav>
@@ -25,20 +27,35 @@
         <!-- Section d'authentification -->
         <section id="authSection" class="section">
             <div id="loginForm" class="auth-form">
-                <h2>Connexion</h2>
+                <h2><i class="fas fa-sign-in-alt"></i> Connexion</h2>
                 <form id="loginFormElement">
-                    <input type="email" placeholder="Email" required>
-                    <input type="password" placeholder="Mot de passe" required>
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" placeholder="Email" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" placeholder="Mot de passe" required>
+                    </div>
                     <button type="submit">Se connecter</button>
                 </form>
             </div>
 
             <div id="registerForm" class="auth-form" style="display: none;">
-                <h2>Inscription</h2>
+                <h2><i class="fas fa-user-plus"></i> Inscription</h2>
                 <form id="registerFormElement">
-                    <input type="text" placeholder="Nom" required>
-                    <input type="email" placeholder="Email" required>
-                    <input type="password" placeholder="Mot de passe" required>
+                    <div class="input-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" placeholder="Nom" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" placeholder="Email" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" placeholder="Mot de passe" required>
+                    </div>
                     <button type="submit">S'inscrire</button>
                 </form>
             </div>
@@ -46,20 +63,23 @@
 
         <!-- Section des sondages -->
         <section id="surveysSection" class="section" style="display: none;">
-            <h2>Sondages disponibles</h2>
+            <h2><i class="fas fa-poll"></i> Sondages disponibles</h2>
             <div id="surveysList"></div>
         </section>
 
         <!-- Section de création de sondage -->
         <section id="createSurveySection" class="section" style="display: none;">
-            <h2>Créer un nouveau sondage</h2>
+            <h2><i class="fas fa-plus-circle"></i> Créer un nouveau sondage</h2>
             <form id="createSurveyForm">
-                <input type="text" placeholder="Nom du sondage" required>
+                <div class="input-group">
+                    <i class="fas fa-heading"></i>
+                    <input type="text" placeholder="Nom du sondage" required>
+                </div>
                 <div id="questionsContainer">
                     <!-- Les questions seront ajoutées ici dynamiquement -->
                 </div>
-                <button type="button" id="addQuestionBtn">Ajouter une question</button>
-                <button type="submit">Créer le sondage</button>
+                <button type="button" id="addQuestionBtn"><i class="fas fa-plus"></i> Ajouter une question</button>
+                <button type="submit"><i class="fas fa-save"></i> Créer le sondage</button>
             </form>
         </section>
 
@@ -70,7 +90,7 @@
                 <div id="answersContainer">
                     <!-- Les questions et champs de réponse seront ajoutés ici dynamiquement -->
                 </div>
-                <button type="submit">Soumettre les réponses</button>
+                <button type="submit"><i class="fas fa-paper-plane"></i> Soumettre les réponses</button>
             </form>
         </section>
 
@@ -80,7 +100,7 @@
             <div id="responsesContainer">
                 <!-- Les réponses seront affichées ici dynamiquement -->
             </div>
-            <button onclick="showSection(surveysSection)">Retour aux sondages</button>
+            <button onclick="showSection(surveysSection)"><i class="fas fa-arrow-left"></i> Retour aux sondages</button>
         </section>
     </main>
 
