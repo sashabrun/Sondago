@@ -234,6 +234,14 @@ button:hover::after {
     transform-origin: left;
 }
 
+.survey-card h3 {
+    text-transform: none;
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
 /* Questions Container */
 #questionsContainer {
     display: flex;
@@ -536,4 +544,16 @@ button:hover::after {
 
 .toast.error i {
     color: #dc3545;
+}
+
+.surveys-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.surveys-grid button {
+    margin: 0;
+    width: 100%;
 } 
