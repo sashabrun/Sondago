@@ -326,9 +326,9 @@ function displaySurveys(sondages) {
             <p>${sondage.questions.length} questions</p>
             <button onclick="showSurvey('${sondage._id}')">Voir le sondage</button>
             ${currentUser && sondage.createur._id === currentUser._id ? `
-                <button onclick="editSurvey('${sondage._id}')">Modifier</button>
-                <button onclick="deleteSurvey('${sondage._id}')">Supprimer</button>
-                <button onclick="showResponses('${sondage._id}')">Voir les réponses</button>
+                <button onclick="editSurvey('${sondage._id}')" class="margin-10">Modifier</button>
+                <button onclick="deleteSurvey('${sondage._id}')" class="margin-10">Supprimer</button>
+                <button onclick="showResponses('${sondage._id}')" class="margin-10">Voir les réponses</button>
             ` : ''}
         `;
         container.appendChild(card);

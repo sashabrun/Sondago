@@ -536,4 +536,8 @@ button:hover::after {
 
 .toast.error i {
     color: #dc3545;
-} 
+}
+
+.margin-10 {
+    margin: 5px 0 5px 0;
+}

@@ -16,7 +16,6 @@ Sondago est une application web permettant de créer et gérer des sondages. Ell
 3. [Structure du Projet](#structure-du-projet)
 4. [Exemple de Création d'une Route](#exemple-de-création-dune-route)
 5. [Modèles de Données](#modèles-de-données)
-6. [Sécurité](#sécurité)
 
 ## Architecture Technique
 - **Backend**: Node.js avec Express
@@ -32,46 +31,25 @@ Sondago est une application web permettant de créer et gérer des sondages. Ell
 - Docker Compose
 
 ### Démarrage Rapide
-```bash
-# Cloner le repository
-git clone [URL_DU_REPO]
+mettre le .env avec les variables (pour le controle, nous avons mis en place un .env-exemple)
+Démarrer l'application en js et ainsi que la bdd mongo db et mongo-express le visual de la bdd
 
-# Démarrer l'application
-docker-compose up --build
+```bash
+docker-compose up
 ```
 
 ### Accès aux Services
 Une fois démarré, vous pouvez accéder à :
 - Application : http://localhost:3000
 - Mongo Express (interface d'administration MongoDB) : http://localhost:8081
-  - Utilisateur : root
-  - Mot de passe : example
+  - Utilisateur : admin
+  - Mot de passe : pass
 
-### Commandes Docker Utiles
-```bash
-# Démarrer l'application
-docker-compose up
-
-# Démarrer en arrière-plan
-docker-compose up -d
-
-# Arrêter l'application
-docker-compose down
-
-# Voir les logs
-docker-compose logs -f
-
-# Reconstruire les images
-docker-compose build
-
-# Arrêter et supprimer les volumes (données)
-docker-compose down -v
-```
 
 ## Structure du Projet
 ```
 sondago/
-├── models/              # Modèles Mongoose
+├── models/             # Modèles Mongoose
 ├── routes/             # Routes Express
 ├── public/             # Fichiers statiques
 │   ├── css/
@@ -178,18 +156,3 @@ async function createSurvey(event) {
   }]
 }
 ```
-
-## Sécurité
-- Authentification JWT
-- Validation des données
-- Protection des routes sensibles
-- Gestion des erreurs
-- Sanitization des entrées utilisateur
-
-## Contribution
-Les contributions sont les bienvenues ! N'hésitez pas à :
-1. Fork le projet
-2. Créer une branche pour votre fonctionnalité
-3. Commiter vos changements
-4. Pousser vers la branche
-5. Ouvrir une Pull Request 
